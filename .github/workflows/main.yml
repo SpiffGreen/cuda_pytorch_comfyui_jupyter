@@ -1,9 +1,7 @@
 name: Build and Push Docker Image
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,4 +21,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: spiffgreen/YOUR_IMAGE_NAME:latest
+        tags: spiffgreen/cuda_pytorch_comfyui_jupyter:latest
