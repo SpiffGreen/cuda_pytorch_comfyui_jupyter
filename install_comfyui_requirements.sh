@@ -90,5 +90,58 @@ wget https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetenso
 cd /workspace/ComfyUI
 pip3 install -r requirements.txt
 pip3 install ultralytics
-nohup jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='${JUPYTER_PASSWORD}' &
-python3 main.py --listen --port=80
+# nohup jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='${JUPYTER_PASSWORD}' &
+# python3 main.py --listen --port=80
+
+---
+version: "2.0"
+services:
+  kaniko:
+    image: gcr.io/kaniko-project/executor:latest
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+    env:
+      - DOCKER_PAT=dckr_pat_mtXhrsJ4cgqqs4taet12RnRxMdo
+      - "SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCCeT7RpcTpn3hJE2HTC4r/lJh4xK0TVTcB4FqLNV7zDkG9PCr/RjpSCmEE1+KGH7BdF3Be+XbIGtdvFyKofjipc1ts872H1H/D65me5KpW1Pu9EW3m91uz8rkg6tl0g9IS19EjdGkB8BxwWdMTt1RtXqldd4ciAcKU5oUPaDpXO50CAn52wUtNaKaN0aUrLJ/Ls1PH1YWEe+B1AmG+Y2VK48GdMgHXImcqg51BTvnReRyWPleDRkSFvyPZUsm50Lf92f+9pZJw/tZv1DHLfM2rbGrfVCW1BBPiWGOSD0LKvA4Kc66ncaxRtGiCUPcRPIhP2uWXt77TldasgtaByfDd"
+    args:
+      - "sh"
+      - "-c"
+      - |
+        apk add --no-cache git && \
+        git clone https://github.com/SpiffGreen/cuda_pytorch_comfyui_jupyter.git /workspace && \
+        echo "$DOCKERHUB_TOKEN" | docker login -u spiffgreen -p ${DOCKER_PAT} && \
+        /kaniko/executor --context=dir://workspace/ \
+        --dockerfile=/workspace/Dockerfile \
+        --destination=spiffgreen/cuda_pytorch_comfyui_jupyter:latest
+profiles:
+  compute:
+    kaniko:
+      resources:
+        cpu:
+          units: 4
+        memory:
+          size: 60GB
+        storage:
+          - size: 1Gi
+        gpu:
+          units: 2
+          attributes:
+            vendor:
+              nvidia:
+                - model: rtxa6000
+                  ram: 48Gi
+                  interface: pcie
+  placement:
+    dcloud:
+      pricing:
+        kaniko:
+          denom: uakt
+          amount: 1000
+deployment:
+  kaniko:
+    dcloud:
+      profile: kaniko
+      count: 1
