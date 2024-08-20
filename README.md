@@ -19,7 +19,7 @@ git clone git@github.com:SpiffGreen/cuda_pytorch_comfyui_jupyter.git
 cd cuda_pytorch_comfyui_jupyter
 
 # Build image
-docker build -t custom-comfyui .
+docker build -t custom-comfyui:latest .
 
 # Run container
 docker run -p 80:80 -p 8888:8888 custom-comfyui
