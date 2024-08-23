@@ -12,6 +12,8 @@ The provided Dockerfile is designed to run a ComfyUI instance with some specific
 
 > First note this, https://docs.github.com/en/actions/using-github-hosted-runners/using-larger-runners/about-larger-runners
 
+The requirements.txt file is a compiled list of all libraries for the custom nodes picked.
+
 ### Build and run locally
 ```bash
 # Clone repo
