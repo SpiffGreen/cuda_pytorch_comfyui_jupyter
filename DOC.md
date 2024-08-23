@@ -33,15 +33,21 @@ One can include custom scripts to download a different set of models on starting
 **Drawback**:
 Room for potential for errors. If the script fails during execution, it may leave the environment in an inconsistent state, and slow startup time.
 
-## Building the Docker Image
+## Build Docker Image and Deploy
 
 You can build the image using the following commands.
 
 ```bash
-docker build -t cuda_pytorch_comfyui_jupyter .
+sudo docker build -t cuda_pytorch_comfyui_jupyter .
 
 # The above may take a long time so you could run it in the background
-nohup docker build -t cuda_pytorch_comfyui_jupyter . &
+nohup sudo docker build -t cuda_pytorch_comfyui_jupyter . &
+
+# Create tag
+sudo docker tag cuda_pytorch_comfyui_jupyter:latest spiffgreen/cuda_pytorch_comfyui_jupyter:1.1.0
+
+# Push to docker
+sudo docker push spiffgreen/cuda_pytorch_comfyui_jupyter:1.1.0
 ```
 
 [Click here](./Dockerfile) to see the Dockerfile.
