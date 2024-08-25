@@ -1,10 +1,10 @@
 # Stage 1: Download models
-FROM spiffgreen/cpcj-models as downloader
+FROM spiffgreen/cpcj-models AS downloader
 
 # Stage 2: Store files in one build stage to reduce layers
-FROM scratch as tmp
+FROM scratch AS tmp
 COPY start.sh /start.sh
-COPY requirements.txt /requirements.txt
+COPY requirements.txt /alldeps.txt
 
     
 # Stage 3: Main build    
@@ -14,14 +14,11 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
-ENV JUPYTER_PASSWORD=Kfeij149EAhna14a
+ENV JUPYTER_PASSWORD=admin
 ENV SHELL=/bin/bash
 
 # Set the working directory
-WORKDIR /
-
-# Create workspace directory
-RUN mkdir /workspace
+WORKDIR /workspace
 
 # Update, upgrade, install packages, install python if PYTHON_VERSION is specified, clean up
 RUN apt-get update --yes && \
@@ -34,21 +31,17 @@ RUN apt-get update --yes && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 
 # Set up Python and pip
-RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip python3-dev build-essential
-
-# Setup jupyter notebook and pytorch
-RUN pip3 install --no-cache-dir notebook torch==2.3.0 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip python3-dev python3.9-venv build-essential
 
 # Install ComfyUI and ComfyUI Manager
-RUN cd /workspace && git clone https://github.com/comfyanonymous/ComfyUI.git && \
-    cd /workspace/ComfyUI && \
-    pip3 install -r requirements.txt
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git && mkdir -p /workspace/ComfyUI/models
+
+# Copy models
+COPY --from=downloader /workspace/ComfyUI/models ./ComfyUI/models
 
 # Start Scripts
-COPY --from=tmp / /
-RUN chmod +x /start.sh && ./start.sh
-
-COPY --from=downloader /workspace/ComfyUI/models /workspace/ComfyUI/models
+COPY --from=tmp / ./ComfyUI
+RUN chmod +x /workspace/ComfyUI/start.sh && /workspace/ComfyUI/start.sh
 
 # Set the default command for the container
 CMD ["bash", "-c", "nohup jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token=${JUPYTER_PASSWORD} & python3 /workspace/ComfyUI/main.py --listen --port=3000"]

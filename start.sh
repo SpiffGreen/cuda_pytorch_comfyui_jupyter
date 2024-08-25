@@ -27,7 +27,17 @@ git clone --depth 1 https://github.com/rgthree/rgthree-comfy
 git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager
 
 # Install dependencies
-cd / && pip3 install -r requirements.txt
+cd /workspace/ComfyUI
+
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+pip3 install --no-cache-dir notebook torch==2.3.0 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
+pip3 install -r /workspace/ComfyUI/custom_nodes/ComfyUI-WD14-Tagger/requirements.txt
+pip3 install -r /workspace/ComfyUI/custom_nodes/ComfyUI_Jags_VectorMagic/requirements.txt
+pip3 install -r /workspace/ComfyUI/custom_nodes/ComfyUI-JakeUpgrade/requirements.txt
+pip3 install -r /workspace/ComfyUI/custom_nodes/was-node-suite-comfyui/requirements.txt
+pip3 install -r /workspace/ComfyUI/custom_nodes/comfyui-art-venture/requirements.txt
 
 # Create necessary directories
 mkdir -p /workspace/ComfyUI/models
@@ -38,30 +48,3 @@ mkdir -p /workspace/ComfyUI/models/upscale_models
 mkdir -p /workspace/ComfyUI/models/checkpoints
 mkdir -p /workspace/ComfyUI/models/vae
 
-# Download deepbump model
-# cd /workspace/ComfyUI/models/deepbump/
-# wget -q https://github.com/HugoTini/DeepBump/blob/master/deepbump256.onnx
-
-# # Download IP-Adapter model
-# cd /workspace/ComfyUI/models/ipadapter/
-# wget -q https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter-plus_sdxl_vit-h.safetensors
-
-# # Download CLIP vision model
-# cd /workspace/ComfyUI/models/clip_vision/
-# wget -q https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors
-# mv model.safetensors CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors
-
-# # Download upscale model
-# cd /workspace/ComfyUI/models/upscale_models/
-# wget -q https://huggingface.co/gemasai/4x_NMKD-Siax_200k/resolve/main/4x_NMKD-Siax_200k.pth
-
-# # Download checkpoints
-# cd /workspace/ComfyUI/models/checkpoints/
-# wget -q https://huggingface.co/RunDiffusion/Juggernaut-XL-v9/resolve/main/Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors
-# wget -q https://civitai.com/api/download/models/456538 -O Juggernaut-XL_inpaint.safetensors
-
-# # Download VAE model
-# cd /workspace/ComfyUI/models/vae/
-# wget -q https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors
-
-cd /workspace/
