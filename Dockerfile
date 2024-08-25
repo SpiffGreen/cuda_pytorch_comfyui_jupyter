@@ -1,11 +1,5 @@
 # Stage 1: Download models
 FROM spiffgreen/cpcj-models AS downloader
-
-# Stage 2: Store files in one build stage to reduce layers
-FROM scratch AS tmp
-COPY start.sh /start.sh
-COPY requirements.txt /alldeps.txt
-
     
 # Stage 3: Main build    
 FROM nvidia/cuda:12.1.0-base-ubuntu22.04
@@ -40,7 +34,7 @@ RUN git clone https://github.com/comfyanonymous/ComfyUI.git && mkdir -p /workspa
 COPY --from=downloader /workspace/ComfyUI/models ./ComfyUI/models
 
 # Start Scripts
-COPY --from=tmp / ./ComfyUI
+COPY start.sh ./ComfyUI/start.sh
 RUN chmod +x /workspace/ComfyUI/start.sh && /workspace/ComfyUI/start.sh
 
 # Set the default command for the container

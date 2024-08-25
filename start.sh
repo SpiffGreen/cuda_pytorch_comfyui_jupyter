@@ -25,6 +25,7 @@ git clone --depth 1 https://github.com/KoreTeknology/ComfyUI-Universal-Styler
 git clone --depth 1 https://github.com/jakechai/ComfyUI-JakeUpgrade
 git clone --depth 1 https://github.com/rgthree/rgthree-comfy
 git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager
+git clone https://github.com/ssitu/ComfyUI_UltimateSDUpscale --recursive
 
 # Install dependencies
 cd /workspace/ComfyUI
@@ -38,6 +39,7 @@ pip3 install -r /workspace/ComfyUI/custom_nodes/ComfyUI_Jags_VectorMagic/require
 pip3 install -r /workspace/ComfyUI/custom_nodes/ComfyUI-JakeUpgrade/requirements.txt
 pip3 install -r /workspace/ComfyUI/custom_nodes/was-node-suite-comfyui/requirements.txt
 pip3 install -r /workspace/ComfyUI/custom_nodes/comfyui-art-venture/requirements.txt
+pip3 install ultralytics
 
 # Create necessary directories
 mkdir -p /workspace/ComfyUI/models
